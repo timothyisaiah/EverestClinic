@@ -1,16 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 
 <head>
     <!-- Required meta tags-->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="au theme template">
-    <meta name="author" content="Hau Nguyen">
-    <meta name="keywords" content="au theme template">
 
     <!-- Title Page-->
-    <title>Doctor Dashboard</title>
+    <title>Triage Home</title>
 
     <!-- Fontfaces CSS-->
     <link href="../doctor/css/font-face.css" rel="stylesheet" media="all">
@@ -37,6 +34,19 @@
 </head>
 
 <body class="animsition">
+    <style>
+        .blink_me {
+            animation: blinker 1s linear infinite;
+            font-weight: lighter;
+            font-size: 1.2em !important;
+        }
+
+        @keyframes blinker {
+            50% {
+                opacity: 0;
+            }
+        }
+    </style>
     <div class="page-wrapper">
         <!-- HEADER MOBILE-->
         <header class="header-mobile d-block d-lg-none">
@@ -59,18 +69,19 @@
                     <ul class="navbar-mobile__list list-unstyled">
 
 
-                        <li>
+                        <li class="nav-item">
                             <a th:href="@{/doctor/index}">
                                 <i class="fas fa-table"></i>Appointments</a>
                         </li>
-                        <li class="nav-item">
-                            <a th:href="@{/triage/triage_home}">
+                        <li class="nav-item active">
+                            <a th:href="@{/triage/triage_queue}">
                                 <i class="fas fa-stethoscope"></i>Triage</a>
                         </li>
                         <li class="nav-item">
-                            <a th:href="@{/consultation/consultation_home}">
+                            <a th:href="@{/consultation/consultation_queue}">
                                 <i class="fas fa-clipboard"></i>Consultation</a>
                         </li>
+
                     </ul>
                 </div>
             </nav>
@@ -89,12 +100,12 @@
                     <ul class="list-unstyled navbar__list">
 
 
-                        <li class="active">
+                        <li class="nav-item">
                             <a th:href="@{/doctor/index}">
                                 <i class="fas fa-table"></i>Appointments</a>
                         </li>
 
-                        <li class="nav-item">
+                        <li class="nav-item active">
                             <a th:href="@{/triage/triage_home}">
                                 <i class="fas fa-stethoscope"></i>Triage</a>
                         </li>
@@ -102,6 +113,7 @@
                             <a th:href="@{/consultation/consultation_home}">
                                 <i class="fas fa-clipboard"></i>Consultation</a>
                         </li>
+
 
                     </ul>
                 </nav>
@@ -198,47 +210,15 @@
                 </div>
 
                 <div class="row m-t-30">
-                    <div class="col-md-12">
-                        <!-- DATA TABLE-->
-                        <div class="table-responsive m-b-40">
-                            <table class="table table-borderless table-data3">
-                                <thead>
-                                    <tr>
-                                        <th>Id</th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Date</th>
-                                        <th>Time</th>
-                                        <th>Description</th>
-                                        <th>Reg. Time</th>
-
-
-                                    </tr>
-
-                                </thead>
-
-                                <tbody>
-                                    <tr th:each="temp : ${app}">
-
-                                        <td th:text="${temp.id}" />
-                                        <td th:text="${temp.name}" />
-                                        <td th:text="${temp.email}" />
-                                        <td th:text="${temp.date}" />
-                                        <td th:text="${temp.time}" />
-                                        <td th:text="${temp.description}" />
-                                        <td th:text="${temp.regtime}" />
-
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- END DATA TABLE-->
+                    <div class="col-md-12 text-center">
+                        <h1>Triage Home Page</h1>
+                        <span id="triage-count" class="text-bold blink_me">0</span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="copyright">
-                            <p>Copyright © Doctor+ Application. All rights reserved. </p>
+                            <p>Copyright © Everest gauge. All rights reserved. </p>
                         </div>
                     </div>
                 </div>
@@ -270,8 +250,56 @@
     <script src="../doctor/vendor/select2/select2.min.js">
     </script>
 
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
     <!-- Main JS-->
     <script src="../doctor/js/main.js"></script>
+    <script>
+
+        var stompClient = null;
+        var serviceid = 1;
+        $(document).ready(function () {
+            connect()
+        });
+        function setConnected(connected) {
+            $("#connect").prop("disabled", connected);
+            $("#disconnect").prop("disabled", !connected);
+            if (connected) {
+                $("#conversation").show();
+            }
+            else {
+                $("#conversation").hide();
+            }
+            $("#greetings").html("");
+        }
+
+        function connect() {
+            var socket = new SockJS('/clinic-websocket');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                setConnected(true);
+                console.log('Connected: ' + frame);
+                stompClient.subscribe('/topic/patientqueuesize/' + serviceid, function (data) {
+                    handleCount(data.body, '#triage-count');
+                    console.log(data.body, '#triage-count');
+                });
+                stompClient.send('/app/patientqueuesize/' + serviceid, {}, JSON.stringify({ unitserviceid: serviceid }));
+
+            });
+        }
+
+        function disconnect() {
+            if (stompClient !== null) {
+                stompClient.disconnect();
+            }
+            setConnected(false);
+            console.log("Disconnected");
+        }
+
+        function handleCount(message, targetControl) {
+            $(targetControl).html(message).trigger('create');
+        }
+    </script>
 
 </body>
 

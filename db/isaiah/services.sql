@@ -1,0 +1,1 @@
+CREATE TABLE `userauth`.`services` ( `serviceid` INT NOT NULL AUTO_INCREMENT , `dateadded` TIMESTAMP DEFAULT CURRENT_TIMESTAMP , `dateupdated` TIMESTAMP DEFAULT CURRENT_TIMESTAMP , `servicename` VARCHAR(255), `description` VARCHAR(255), `servicekey` VARCHAR(25), `addedby` INT, `updatedby` INT, PRIMARY KEY (`serviceid`)) ENGINE = InnoDB;

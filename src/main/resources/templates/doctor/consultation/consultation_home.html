@@ -1,16 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 
 <head>
     <!-- Required meta tags-->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="au theme template">
-    <meta name="author" content="Hau Nguyen">
-    <meta name="keywords" content="au theme template">
 
     <!-- Title Page-->
-    <title>Doctor Dashboard</title>
+    <title>Consultation Home</title>
 
     <!-- Fontfaces CSS-->
     <link href="../doctor/css/font-face.css" rel="stylesheet" media="all">
@@ -59,7 +56,7 @@
                     <ul class="navbar-mobile__list list-unstyled">
 
 
-                        <li>
+                        <li class="nav-item">
                             <a th:href="@{/doctor/index}">
                                 <i class="fas fa-table"></i>Appointments</a>
                         </li>
@@ -67,10 +64,11 @@
                             <a th:href="@{/triage/triage_home}">
                                 <i class="fas fa-stethoscope"></i>Triage</a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item active">
                             <a th:href="@{/consultation/consultation_home}">
                                 <i class="fas fa-clipboard"></i>Consultation</a>
                         </li>
+
                     </ul>
                 </div>
             </nav>
@@ -89,7 +87,7 @@
                     <ul class="list-unstyled navbar__list">
 
 
-                        <li class="active">
+                        <li class="nav-item">
                             <a th:href="@{/doctor/index}">
                                 <i class="fas fa-table"></i>Appointments</a>
                         </li>
@@ -98,10 +96,11 @@
                             <a th:href="@{/triage/triage_home}">
                                 <i class="fas fa-stethoscope"></i>Triage</a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item active">
                             <a th:href="@{/consultation/consultation_home}">
                                 <i class="fas fa-clipboard"></i>Consultation</a>
                         </li>
+
 
                     </ul>
                 </nav>
@@ -198,47 +197,14 @@
                 </div>
 
                 <div class="row m-t-30">
-                    <div class="col-md-12">
-                        <!-- DATA TABLE-->
-                        <div class="table-responsive m-b-40">
-                            <table class="table table-borderless table-data3">
-                                <thead>
-                                    <tr>
-                                        <th>Id</th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Date</th>
-                                        <th>Time</th>
-                                        <th>Description</th>
-                                        <th>Reg. Time</th>
-
-
-                                    </tr>
-
-                                </thead>
-
-                                <tbody>
-                                    <tr th:each="temp : ${app}">
-
-                                        <td th:text="${temp.id}" />
-                                        <td th:text="${temp.name}" />
-                                        <td th:text="${temp.email}" />
-                                        <td th:text="${temp.date}" />
-                                        <td th:text="${temp.time}" />
-                                        <td th:text="${temp.description}" />
-                                        <td th:text="${temp.regtime}" />
-
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- END DATA TABLE-->
+                    <div class="col-md-12 text-center">
+                        <h1>Consultation Home Page</h1>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="copyright">
-                            <p>Copyright © Doctor+ Application. All rights reserved. </p>
+                            <p>Copyright © Everest gauge. All rights reserved. </p>
                         </div>
                     </div>
                 </div>
