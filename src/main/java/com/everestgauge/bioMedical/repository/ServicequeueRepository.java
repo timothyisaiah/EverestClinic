@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface ServicequeueRepository extends JpaRepository<Servicequeue, Long> {
 
-    @Query(value = "SELECT COUNT servicequeid FROM servicequeue s WHERE s.serviceid=?1,s.timein=?2,s.serviced=?3,s.ispopped=?4,s.canceled=?5", nativeQuery = true)
+    @Query(value = "SELECT COUNT(servicequeueid) FROM servicequeue  WHERE unitserviceid=?1 AND DATE(timein)=?2 AND serviced=?3 AND ispopped=?4 AND canceled=?5", nativeQuery = true)
     Integer queueSize(Integer serviceid, Date timein,
             Boolean serviced, Boolean ispopped, Boolean canceled);
 }
